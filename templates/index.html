@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevCRM Kanban</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#020617;
+    color:white;
+    display:flex;
+}
+
+.sidebar{
+    width:250px;
+    min-height:100vh;
+    background:#081028;
+    padding:30px;
+}
+
+.sidebar h1{
+    font-size:38px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin-top:25px;
+    font-size:20px;
+}
+
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.cards{
+    display:flex;
+    gap:20px;
+    margin:25px 0 40px;
+}
+
+.card{
+    background:#111827;
+    padding:25px;
+    border-radius:18px;
+    width:220px;
+}
+
+.card p{
+    font-size:36px;
+    font-weight:bold;
+}
+
+.tarefas-box{
+    background:#081028;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:30px;
+}
+
+input,select,button{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border:none;
+    border-radius:10px;
+    background:#111827;
+    color:white;
+    font-size:16px;
+}
+
+button{
+    background:#2563eb;
+    cursor:pointer;
+}
+
+.kanban{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:18px;
+    margin-top:30px;
+}
+
+.coluna{
+    background:#081028;
+    padding:18px;
+    border-radius:18px;
+    min-height:450px;
+}
+
+.tarefa{
+    background:#111827;
+    padding:18px;
+    border-radius:15px;
+    margin-bottom:15px;
+    cursor:grab;
+}
+
+.tag{
+    display:inline-block;
+    background:#2563eb;
+    padding:6px 10px;
+    border-radius:10px;
+    font-size:12px;
+    margin-right:6px;
+    margin-top:10px;
+}
+
+.delete{
+    background:#dc2626;
+    margin-top:15px;
+}
+
+.heatmap-box{
+    background:#081028;
+    padding:25px;
+    border-radius:20px;
+    margin-bottom:30px;
+}
+
+.heatmap{
+    display:grid;
+    grid-template-columns:repeat(14, 18px);
+    gap:6px;
+    margin-top:20px;
+}
+
+.dia{
+    width:18px;
+    height:18px;
+    border-radius:4px;
+    background:#1e293b;
+}
+
+.nivel1{ background:#14532d; }
+.nivel2{ background:#16a34a; }
+.nivel3{ background:#22c55e; }
+.nivel4{ background:#86efac; }
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h1>DevCRM 🚀</h1>
+
+    <a href="/">Dashboard</a>
+    <a href="/roadmaps">Roadmaps</a>
+    <a href="/projetos">Projetos</a>
+    <a href="/revisoes">Revisões</a>
+    <a href="/ia">IA</a>
+    <a href="/configuracoes">Configurações</a>
+    <a href="/logout">Sair</a>
+
+</div>
+
+<div class="main">
+
+    <h1>Boa noite, João 👋</h1>
+    <p>Seu painel de estudos estilo GitHub + Trello.</p>
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>Horas</h2>
+            <p>4h</p>
+        </div>
+
+        <div class="card">
+            <h2>Streak</h2>
+            <p>12</p>
+        </div>
+
+        <div class="card">
+            <h2>Meta</h2>
+            <p>67%</p>
+        </div>
+
+    </div>
+
+    <div class="heatmap-box">
+
+        <h2>Heatmap de Estudos 🔥</h2>
+
+        <p>Sua consistência nos últimos dias</p>
+
+        <div class="heatmap" id="heatmap"></div>
+
+    </div>
+
+    <div class="tarefas-box">
+
+        <h2>Criar nova tarefa</h2>
+
+        <input type="text" id="nomeTarefa" placeholder="Nome da tarefa">
+
+        <select id="categoria">
+            <option>Frontend</option>
+            <option>Backend</option>
+            <option>Python</option>
+            <option>Banco de Dados</option>
+        </select>
+
+        <select id="dificuldade">
+            <option>Fácil</option>
+            <option>Médio</option>
+            <option>Difícil</option>
+        </select>
+
+        <button onclick="criarTarefa()">
+            Criar Tarefa
+        </button>
+
+    </div>
+
+    <div class="kanban">
+
+        <div class="coluna"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event, 'backlog')">
+
+            <h2>📌 Backlog</h2>
+
+            <div id="col-backlog"></div>
+
+        </div>
+
+        <div class="coluna"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event, 'hoje')">
+
+            <h2>🔥 Hoje</h2>
+
+            <div id="col-hoje"></div>
+
+        </div>
+
+        <div class="coluna"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event, 'fazendo')">
+
+            <h2>⚙️ Fazendo</h2>
+
+            <div id="col-fazendo"></div>
+
+        </div>
+
+        <div class="coluna"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event, 'revisao')">
+
+            <h2>🔁 Revisão</h2>
+
+            <div id="col-revisao"></div>
+
+        </div>
+
+        <div class="coluna"
+        ondragover="allowDrop(event)"
+        ondrop="drop(event, 'dominado')">
+
+            <h2>✅ Dominado</h2>
+
+            <div id="col-dominado"></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function gerarHeatmap() {
+
+    const heatmap = document.getElementById("heatmap")
+
+    heatmap.innerHTML = ""
+
+    for(let i = 0; i < 70; i++) {
+
+        const nivel = Math.floor(Math.random() * 5)
+
+        const quadrado = document.createElement("div")
+
+        quadrado.className = "dia"
+
+        if(nivel > 0) {
+            quadrado.classList.add("nivel" + nivel)
+        }
+
+        heatmap.appendChild(quadrado)
+    }
+}
+
+async function carregarTarefas() {
+
+    const resposta = await fetch("/tarefas")
+
+    const tarefas = await resposta.json()
+
+    const colunas = [
+        "backlog",
+        "hoje",
+        "fazendo",
+        "revisao",
+        "dominado"
+    ]
+
+    colunas.forEach(status => {
+
+        document.getElementById(
+            "col-" + status
+        ).innerHTML = ""
+
+    })
+
+    tarefas.forEach(tarefa => {
+
+        const coluna = document.getElementById(
+            "col-" + tarefa.status
+        )
+
+        if(!coluna){
+            return
+        }
+
+        coluna.innerHTML += `
+            <div class="tarefa"
+            draggable="true"
+            ondragstart="drag(event, ${tarefa.id})">
+
+                <h3>${tarefa.nome}</h3>
+
+                <span class="tag">
+                    ${tarefa.categoria}
+                </span>
+
+                <span class="tag">
+                    ${tarefa.dificuldade}
+                </span>
+
+                <button
+                class="delete"
+                onclick="excluirTarefa(${tarefa.id})">
+
+                    Excluir
+
+                </button>
+
+            </div>
+        `
+    })
+}
+
+async function criarTarefa() {
+
+    const nome = document.getElementById(
+        "nomeTarefa"
+    ).value
+
+    const categoria = document.getElementById(
+        "categoria"
+    ).value
+
+    const dificuldade = document.getElementById(
+        "dificuldade"
+    ).value
+
+    if(nome.trim() === ""){
+        alert("Digite o nome da tarefa")
+        return
+    }
+
+    await fetch("/tarefas", {
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            nome,
+            categoria,
+            dificuldade
+        })
+    })
+
+    document.getElementById(
+        "nomeTarefa"
+    ).value = ""
+
+    carregarTarefas()
+}
+
+function drag(event, id) {
+
+    event.dataTransfer.setData("id", id)
+
+}
+
+function allowDrop(event) {
+
+    event.preventDefault()
+
+}
+
+async function drop(event, status) {
+
+    event.preventDefault()
+
+    const id = event.dataTransfer.getData("id")
+
+    await fetch("/tarefas/" + id, {
+
+        method:"PUT",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+            status: status
+        })
+    })
+
+    carregarTarefas()
+}
+
+async function excluirTarefa(id) {
+
+    await fetch("/tarefas/" + id, {
+        method:"DELETE"
+    })
+
+    carregarTarefas()
+}
+
+gerarHeatmap()
+carregarTarefas()
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+
+<title>Cadastro</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#050816;
+    font-family:Arial;
+}
+
+.box{
+    width:400px;
+    background:#0d1329;
+    padding:40px;
+    border-radius:25px;
+    color:white;
+}
+
+input{
+    width:100%;
+    padding:18px;
+    margin-top:15px;
+    border:none;
+    border-radius:12px;
+    background:#111827;
+    color:white;
+}
+
+button{
+    width:100%;
+    padding:18px;
+    margin-top:25px;
+    border:none;
+    border-radius:12px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+<h1>Criar Conta</h1>
+
+<form action="/cadastro" method="POST">
+
+<input type="text" name="nome" placeholder="Nome">
+
+<input type="email" name="email" placeholder="Email">
+
+<input type="password" name="senha" placeholder="Senha">
+
+<button type="submit">Cadastrar</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

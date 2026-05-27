@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>IA DevCRM</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#020617;
+    color:white;
+    display:flex;
+}
+
+.sidebar{
+    width:250px;
+    min-height:100vh;
+    background:#081028;
+    padding:30px;
+}
+
+.sidebar h1{
+    font-size:40px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    margin-top:25px;
+    font-size:20px;
+}
+
+.main{
+    flex:1;
+    padding:40px;
+}
+
+.chat-box{
+    background:#081028;
+    border-radius:20px;
+    padding:25px;
+    margin-top:30px;
+}
+
+.messages{
+    height:500px;
+    overflow:auto;
+    margin-bottom:20px;
+}
+
+.message{
+    background:#111827;
+    padding:15px;
+    border-radius:15px;
+    margin-top:15px;
+}
+
+.user{
+    border-left:5px solid #2563eb;
+}
+
+.bot{
+    border-left:5px solid #22c55e;
+}
+
+textarea{
+    width:100%;
+    height:120px;
+    border:none;
+    border-radius:15px;
+    padding:15px;
+    background:#111827;
+    color:white;
+    font-size:16px;
+    resize:none;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    background:#2563eb;
+    color:white;
+    font-size:16px;
+    margin-top:15px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <h1>🤖</h1>
+
+    <a href="/">Dashboard</a>
+    <a href="/roadmaps">Roadmaps</a>
+    <a href="/projetos">Projetos</a>
+    <a href="/revisoes">Revisões</a>
+    <a href="/ia">IA</a>
+    <a href="/configuracoes">Configurações</a>
+    <a href="/logout">Sair</a>
+
+</div>
+
+<div class="main">
+
+    <h1>IA DevCRM 🤖</h1>
+
+    <p>Seu mentor inteligente de programação.</p>
+
+    <div class="chat-box">
+
+        <div class="messages" id="messages">
+
+            <div class="message bot">
+                Olá João 👋<br><br>
+
+                Posso ajudar você com:
+                <br><br>
+
+                • Python<br>
+                • Flask<br>
+                • HTML/CSS<br>
+                • Roadmaps<br>
+                • Projetos<br>
+                • Estudos
+            </div>
+
+        </div>
+
+        <textarea
+        id="pergunta"
+        placeholder="Digite sua pergunta..."></textarea>
+
+        <button onclick="enviarPergunta()">
+            Perguntar IA
+        </button>
+
+    </div>
+
+</div>
+
+<script>
+
+async function enviarPergunta(){
+
+    const pergunta = document.getElementById(
+        "pergunta"
+    ).value
+
+    const messages = document.getElementById(
+        "messages"
+    )
+
+    if(pergunta.trim() === ""){
+        return
+    }
+
+    messages.innerHTML += `
+        <div class="message user">
+            ${pergunta}
+        </div>
+    `
+
+    let resposta = ""
+
+    if(
+        pergunta.toLowerCase().includes("python")
+    ){
+        resposta =
+        "Python é excelente para backend, automações e IA 🚀"
+    }
+
+    else if(
+        pergunta.toLowerCase().includes("flask")
+    ){
+        resposta =
+        "Flask é um microframework poderoso para criar sistemas web em Python 🔥"
+    }
+
+    else if(
+        pergunta.toLowerCase().includes("frontend")
+    ){
+        resposta =
+        "Frontend envolve HTML, CSS, JavaScript e frameworks como React 🎨"
+    }
+
+    else if(
+        pergunta.toLowerCase().includes("roadmap")
+    ){
+        resposta =
+        "Seu próximo roadmap ideal seria: HTML → CSS → JS → Flask → Banco de Dados 🚀"
+    }
+
+    else{
+        resposta =
+        "Interessante 👀 continue estudando diariamente que você vai evoluir rápido."
+    }
+
+    setTimeout(() => {
+
+        messages.innerHTML += `
+            <div class="message bot">
+                ${resposta}
+            </div>
+        `
+
+        messages.scrollTop =
+        messages.scrollHeight
+
+    }, 700)
+
+    document.getElementById(
+        "pergunta"
+    ).value = ""
+}
+
+</script>
+
+</body>
+</html>
