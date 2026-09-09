@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, jsonify, redirect
+import os
 import sqlite3
 
+from flask import Flask, render_template, request, jsonify, redirect
 from flask_login import (
     LoginManager,
     UserMixin,
@@ -8,11 +9,15 @@ from flask_login import (
     login_required,
     logout_user
 )
-
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
-app.secret_key = "devcrm_super_secreto_2026"
+
+SECRET_KEY = os.getenv("FLASK_SECRET_KEY")
+if not SECRET_KEY:
+    raise RuntimeError("FLASK_SECRET_KEY não configurada")
+
+app.config["SECRET_KEY"] = SECRET_KEY
 
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -164,7 +169,7 @@ def cadastro():
 
             return redirect("/login")
 
-        except:
+        except Exception:
             banco.close()
             return "Esse email já está cadastrado"
 
